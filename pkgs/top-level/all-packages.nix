@@ -8523,6 +8523,7 @@ with pkgs;
     ubootRaspberryPi3_64bit
     ubootRaspberryPi4_32bit
     ubootRaspberryPi4_64bit
+    ubootRaspberryPiGeneric
     ubootRaspberryPiZero
     ubootRock3C
     ubootRock4CPlus
