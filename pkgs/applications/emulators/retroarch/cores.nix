@@ -7,6 +7,7 @@
   bzip2,
   cmake,
   curl,
+  dbus,
   fetchFromGitHub,
   fetchpatch,
   ffmpeg_6,
@@ -14,6 +15,8 @@
   fmt,
   freetype,
   gettext,
+  gnutls,
+  gtest,
   harfbuzz,
   hexdump,
   hidapi,
@@ -45,7 +48,9 @@
   sfml,
   snappy,
   speexdsp,
+  soundtouch,
   udev,
+  wayland,
   which,
   xorg,
   xxd,
@@ -661,6 +666,67 @@ in
     meta = {
       description = "Port of Hatari to libretro";
       license = lib.licenses.gpl2Only;
+    };
+  };
+
+  lrps2 = mkLibretroCore {
+    core = "LRPS2";
+    src = getCoreSrc "LRPS2";
+    extraNativeBuildInputs = [
+      cmake
+      gettext
+      pkg-config
+    ];
+    extraBuildInputs = [
+      dbus
+      ffmpeg_6
+      fmt
+      gnutls
+      gtest
+      libaio
+      libGL
+      libGLU
+      libpcap
+      libpng
+      libxml2
+      soundtouch
+      xorg.libxcb
+      xorg.libXdmcp
+      xorg.libXau
+      xorg.libX11
+      xz
+      xxd
+      wayland
+      udev
+    ];
+    makefile = "Makefile";
+    makeFlags = [
+      "HAVE_PARALLEL=1"
+      "HAVE_PARALLEL_RSP=1"
+    ];
+    cmakeFlags = [
+      "-DUSER_CMAKE_CXX_FLAGS=-O3"
+      "-DENABLE_QT=OFF"
+      "-DLIBRETRO=ON"
+      "-DUSE_LTO=FALSE"
+      "-DCMAKE_INSTALL_PREFIX=${placeholder "out"}"
+      "-DDISABLE_ADVANCE_SIMD=OFF"
+      "-DCMAKE_AR=${stdenv.cc.cc}/bin/gcc-ar"
+      "-DCMAKE_RANLIB=${stdenv.cc.cc}/bin/gcc-ranlib"
+    ];
+    postPatch = ''
+      # remove ccache
+      substituteInPlace CMakeLists.txt --replace "ccache" ""
+    '';
+    postBuild = ''
+      cp pcsx2/pcsx2_libretro.so lrps2_libretro.so
+    '';
+    hardeningDisable = [ "fortify3" ];
+    env.NIX_CFLAGS_COMPILE = "-march=sandybridge";
+    meta = {
+      description = "LRPS2";
+      license = lib.licenses.gpl3Plus;
+      platforms = lib.platforms.x86_64;
     };
   };
 
