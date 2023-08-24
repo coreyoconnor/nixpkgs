@@ -1,8 +1,17 @@
 # To build, use:
 # nix-build nixos -I nixos-config=nixos/modules/installer/sd-card/sd-image-aarch64.nix -A config.system.build.sdImage
 { config, lib, pkgs, ... }:
+let
+  boardDeviceTreeBlobs = [
+    "bcm2710-rpi-3-b.dtb"
+    "bcm2710-rpi-cm3.dtb"
+    "bcm2711-rpi-4-b.dtb"
+    "bcm2711-rpi-400.dtb"
+    "bcm2711-rpi-cm4.dtb"
+    "bcm2711-rpi-cm4s.dtb"
+  ];
 
-{
+in {
   imports = [
     ../../profiles/base.nix
     ./sd-image.nix
@@ -16,13 +25,15 @@
   # The serial ports listed here are:
   # - ttyS0: for Tegra (Jetson TX1)
   # - ttyAMA0: for QEMU's -machine virt
-  boot.kernelParams = ["console=ttyS0,115200n8" "console=ttyAMA0,115200n8" "console=tty0"];
+  boot.kernelParams = ["console=ttyS0,115200n8" "console=ttyAMA0,115200n8" "console=tty0" "dwc_otg.lpm_enable=0"];
 
   sdImage = {
     populateFirmwareCommands = let
       configTxt = pkgs.writeText "config.txt" ''
         [pi3]
         kernel=u-boot-rpi3.bin
+        dtoverlay=i2c1,pins_44_45
+        dtoverlay=i2c-rtc,mcp7940x
 
         [pi02]
         kernel=u-boot-rpi3.bin
@@ -65,15 +76,14 @@
         cp ${configTxt} firmware/config.txt
 
         # Add pi3 specific files
-        cp ${pkgs.ubootRaspberryPi3_64bit}/u-boot.bin firmware/u-boot-rpi3.bin
+        cp ${pkgs.ubootRaspberryPiGeneric}/u-boot.bin firmware/u-boot-rpi3.bin
 
         # Add pi4 specific files
         cp ${pkgs.ubootRaspberryPi4_64bit}/u-boot.bin firmware/u-boot-rpi4.bin
         cp ${pkgs.raspberrypi-armstubs}/armstub8-gic.bin firmware/armstub8-gic.bin
-        cp ${pkgs.raspberrypifw}/share/raspberrypi/boot/bcm2711-rpi-4-b.dtb firmware/
-        cp ${pkgs.raspberrypifw}/share/raspberrypi/boot/bcm2711-rpi-400.dtb firmware/
-        cp ${pkgs.raspberrypifw}/share/raspberrypi/boot/bcm2711-rpi-cm4.dtb firmware/
-        cp ${pkgs.raspberrypifw}/share/raspberrypi/boot/bcm2711-rpi-cm4s.dtb firmware/
+
+        # Add device tree blobs for boards
+        ${lib.concatMapStringsSep "\n" (dtb: "cp ${pkgs.raspberrypifw}/share/raspberrypi/boot/${dtb} firmware/") boardDeviceTreeBlobs}
       '';
     populateRootCommands = ''
       mkdir -p ./files/boot
