@@ -55,6 +55,9 @@ let
     if [ -r $HOME/.local/share/Steam/bootstrap.tar.xz ]; then
       chmod +w $HOME/.local/share/Steam/bootstrap.tar.xz
     fi
+    if [ -r $HOME/.steam/debian-installation/bootstrap.tar.xz ] ; then
+      chmod +w $HOME/.steam/debian-installation/bootstrap.tar.xz
+    fi
   '';
 
   envScript = lib.toShellVars extraEnv;
