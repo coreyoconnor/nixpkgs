@@ -3921,6 +3921,8 @@ with pkgs;
 
   mobilecoin-wallet = callPackage ../applications/misc/mobilecoin-wallet { };
 
+  nordpass = callPackage ../tools/security/nordpass { };
+
   pacparser = callPackage ../tools/networking/pacparser { };
 
   pairdrop = callPackage ../applications/misc/pairdrop { };
