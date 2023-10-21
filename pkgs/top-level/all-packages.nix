@@ -4016,6 +4016,8 @@ with pkgs;
 
   mpdevil = callPackage ../applications/audio/mpdevil { };
 
+  nordpass = callPackage ../tools/security/nordpass { };
+
   pacparser = callPackage ../tools/networking/pacparser { };
 
   pairdrop = callPackage ../applications/misc/pairdrop { };
