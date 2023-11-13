@@ -18,14 +18,14 @@
 
 python3Packages.buildPythonApplication rec {
   pname = "waydroid";
-  version = "1.4.1";
+  version = "1.4.2";
   format = "other";
 
   src = fetchFromGitHub {
     owner = pname;
     repo = pname;
     rev = version;
-    sha256 = "sha256-0AkNzMIumvgnVcLKX72E2+Eg54Y9j7tdIYPsroOTLWA=";
+    sha256 = "sha256-/dFvhiK3nCOOmAtrYkQEB8Ge8Rf1ea5cDO7puTwS5bI=";
   };
 
   buildInputs = [
@@ -51,7 +51,7 @@ python3Packages.buildPythonApplication rec {
   dontWrapGApps = true;
 
   installPhase = ''
-    make install PREFIX=$out USE_SYSTEMD=0
+    make install PREFIX=$out APPS_MENU_DIR=$out/etc/xdg/menus/applications-merged USE_SYSTEMD=0
   '';
 
   preFixup = ''
