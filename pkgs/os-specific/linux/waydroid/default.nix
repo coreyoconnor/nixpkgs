@@ -60,7 +60,7 @@ python3Packages.buildPythonApplication rec {
   dontWrapGApps = true;
 
   installPhase = ''
-    make install PREFIX=$out USE_SYSTEMD=0
+    make install PREFIX=$out APPS_MENU_DIR=$out/etc/xdg/menus/applications-merged USE_SYSTEMD=0
   '';
 
   preFixup = ''
