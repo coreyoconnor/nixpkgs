@@ -232,8 +232,8 @@
     "hatari": {
         "owner": "libretro",
         "repo": "hatari",
-        "rev": "1ebf0a0488580ef95c0b28f02223b31813c867c5",
-        "sha256": "i6dr+fFWPatRCIY+ajIZ1p3ERPV5ktv0nxHKxbGE5ao="
+        "rev": "d0903a9447323e647ed9756238ba1550cac92940",
+        "hash": "sha256-kSdK7rkORgTkMg8kL56pNb+wU+m2413shEt7UQ9SCjM="
     },
     "LRPS2": {
         "owner": "libretro",
@@ -360,8 +360,14 @@
     "parallel-n64": {
         "owner": "libretro",
         "repo": "parallel-n64",
-        "rev": "a03fdcba6b2e9993f050b50112f597ce2f44fa2c",
-        "sha256": "aJG+s+1OkHQHPvVzlJWU/VziQWj1itKkRwqcEBK+lgA="
+        "rev": "49eadb4da85f7e3bd59b60f61e8fd5dbfb9f07d5",
+        "hash": "sha256-S8gsPOgxdq0SwoYFua4ouT7XjT45d/mwCYmI3VVahdI="
+    },
+    "pcsx2": {
+        "owner": "libretro",
+        "repo": "lrps2",
+        "rev": "f3c8743d6a42fe429f703b476fecfdb5655a98a9",
+        "hash": "sha256-0piCNWX7QbZ58KyTlWp4h1qLxXpi1z6ML8sBHMTvCY4="
     },
     "pcsx2": {
         "owner": "libretro",
