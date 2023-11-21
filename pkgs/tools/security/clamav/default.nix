@@ -17,6 +17,7 @@ stdenv.mkDerivation rec {
     # Flaky test, remove this when https://github.com/Cisco-Talos/clamav/issues/343 is fixed
     ./remove-freshclam-test.patch
     ./sample-cofiguration-file-install-location.patch
+    ./infinite-loop-on-non-existent-path.patch
   ];
 
   enableParallelBuilding = true;
