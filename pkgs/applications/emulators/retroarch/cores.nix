@@ -549,11 +549,12 @@ in
       "HAVE_PARALLEL_RSP=1"
     ];
     cmakeFlags = [
+      "-DUSER_CMAKE_CXX_FLAGS=-O3"
       "-DENABLE_QT=OFF"
       "-DLIBRETRO=ON"
       "-DUSE_LTO=FALSE"
       "-DCMAKE_INSTALL_PREFIX=${placeholder "out"}"
-      "-DDISABLE_ADVANCE_SIMD=NO"
+      "-DDISABLE_ADVANCE_SIMD=OFF"
       "-DCMAKE_AR=${stdenv.cc.cc}/bin/gcc-ar"
       "-DCMAKE_RANLIB=${stdenv.cc.cc}/bin/gcc-ranlib"
     ];
