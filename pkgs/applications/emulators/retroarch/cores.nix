@@ -577,67 +577,6 @@ in
     };
   };
 
-  lrps2 = mkLibretroCore {
-    core = "LRPS2";
-    src = getCoreSrc "LRPS2";
-    extraNativeBuildInputs = [
-      cmake
-      gettext
-      pkg-config
-    ];
-    extraBuildInputs = [
-      dbus
-      ffmpeg
-      fmt
-      gnutls
-      gtest
-      libaio
-      libGL
-      libGLU
-      libpcap
-      libpng
-      libxml2
-      soundtouch
-      xorg.libxcb
-      xorg.libXdmcp
-      xorg.libXau
-      xorg.libX11
-      xz
-      xxd
-      wayland
-      udev
-    ];
-    makefile = "Makefile";
-    makeFlags = [
-      "HAVE_PARALLEL=1"
-      "HAVE_PARALLEL_RSP=1"
-    ];
-    cmakeFlags = [
-      "-DUSER_CMAKE_CXX_FLAGS=-O3"
-      "-DENABLE_QT=OFF"
-      "-DLIBRETRO=ON"
-      "-DUSE_LTO=FALSE"
-      "-DCMAKE_INSTALL_PREFIX=${placeholder "out"}"
-      "-DDISABLE_ADVANCE_SIMD=OFF"
-      "-DCMAKE_AR=${stdenv.cc.cc}/bin/gcc-ar"
-      "-DCMAKE_RANLIB=${stdenv.cc.cc}/bin/gcc-ranlib"
-    ];
-    postPatch = ''
-      # remove ccache
-      substituteInPlace CMakeLists.txt --replace "ccache" ""
-    '';
-    postBuild = ''
-      cp pcsx2/pcsx2_libretro.so lrps2_libretro.so
-    '';
-    hardeningDisable = [ "fortify3" ];
-    env.NIX_CFLAGS_COMPILE = "-march=sandybridge";
-    meta = {
-      description = "LRPS2";
-      license = lib.licenses.gpl3Plus;
-      platforms = lib.platforms.x86_64;
-    };
-  };
-
   mame = mkLibretroCore {
     core = "mame";
     extraNativeBuildInputs = [ python3 ];
@@ -889,17 +828,39 @@ in
       pkg-config
     ];
     extraBuildInputs = [
+      dbus
+      ffmpeg
+      fmt
+      gnutls
+      gtest
       libaio
       libGL
       libGLU
       libpcap
       libpng
       libxml2
+      soundtouch
+      xorg.libxcb
+      xorg.libXdmcp
+      xorg.libXau
+      xorg.libX11
       xz
       xxd
+      wayland
+      udev
     ];
     makefile = "Makefile";
-    cmakeFlags = [ "-DLIBRETRO=ON" ];
+    makeFlags = [
+      "HAVE_PARALLEL=1"
+      "HAVE_PARALLEL_RSP=1"
+    ];
+    cmakeFlags = [
+      "-DUSER_CMAKE_CXX_FLAGS=-O3"
+      "-DENABLE_QT=OFF"
+      "-DLIBRETRO=ON"
+      "-DDISABLE_ADVANCE_SIMD=OFF"
+    ];
+    env.NIX_CFLAGS_COMPILE = "-march=sandybridge";
     # remove ccache
     postPatch = ''
       substituteInPlace CMakeLists.txt --replace "ccache" ""
