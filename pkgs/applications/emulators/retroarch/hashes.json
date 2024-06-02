@@ -403,17 +403,6 @@
         },
         "version": "unstable-2024-10-01"
     },
-    "LRPS2": {
-        "fetcher": "fetchFromGitHub",
-        "src": {
-          "owner": "libretro",
-          "repo": "LRPS2",
-          "rev": "f3c8743d6a42fe429f703b476fecfdb5655a98a9",
-          "sha256": "WgRxOFAvKCiiMwdxyEtbXIUEnC9wGERwJljE2aZgy4Y=",
-          "fetchSubmodules": true
-        },
-        "version": "unstable-2024-04-04"
-    },
     "mame": {
         "fetcher": "fetchFromGitHub",
         "src": {

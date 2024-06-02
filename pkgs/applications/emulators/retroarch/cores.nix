@@ -1009,17 +1009,39 @@ in
       pkg-config
     ];
     extraBuildInputs = [
+      dbus
+      ffmpeg_6
+      fmt
+      gnutls
+      gtest
       libaio
       libGL
       libGLU
       libpcap
       libpng
       libxml2
+      soundtouch
+      xorg.libxcb
+      xorg.libXdmcp
+      xorg.libXau
+      xorg.libX11
       xz
       xxd
+      wayland
+      udev
     ];
     makefile = "Makefile";
-    cmakeFlags = [ "-DLIBRETRO=ON" ];
+    makeFlags = [
+      "HAVE_PARALLEL=1"
+      "HAVE_PARALLEL_RSP=1"
+    ];
+    cmakeFlags = [
+      "-DUSER_CMAKE_CXX_FLAGS=-O3"
+      "-DENABLE_QT=OFF"
+      "-DLIBRETRO=ON"
+      "-DDISABLE_ADVANCE_SIMD=OFF"
+    ];
+    env.NIX_CFLAGS_COMPILE = "-march=sandybridge";
     # remove ccache
     postPatch = ''
       substituteInPlace CMakeLists.txt --replace "ccache" ""
