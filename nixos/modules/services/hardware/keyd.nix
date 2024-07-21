@@ -114,6 +114,8 @@ in
       description = "Keyd remapping daemon";
       documentation = [ "man:keyd(1)" ];
 
+      after = [ "dbus.service" ];
+      bindsTo = [ "dbus.service" ];
       wantedBy = [ "multi-user.target" ];
 
       restartTriggers = mapAttrsToList
@@ -143,7 +145,7 @@ in
         RuntimeDirectory = "keyd";
 
         # Hardening
-        CapabilityBoundingSet = [ "CAP_SYS_NICE" ];
+        CapabilityBoundingSet = [ "CAP_SYS_NICE" "CAP_SETGID"];
         DeviceAllow = [
           "char-input rw"
           "/dev/uinput rw"
