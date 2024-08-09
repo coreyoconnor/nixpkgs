@@ -37,8 +37,8 @@
 let
   # determine these versions from
   # curl -H 'Snap-Device-Series: 16' http://api.snapcraft.io/v2/snaps/info/nordpass
-  version = "5.19.3";
-  snapVersion = "185";
+  version = "5.20.6";
+  snapVersion = "186";
   snapId = "00CQ2MvSr0Ex7zwdGhCYTa0ZLMw3H6hf";
   snapBaseUrl = "https://api.snapcraft.io/api/v1/snaps/download/";
 
@@ -95,7 +95,7 @@ let
 
     src = fetchurl {
       url = "${snapBaseUrl}${snapId}_${snapVersion}.snap";
-      hash = "sha256-s3EPfOUPcAgj52p+w1zxzLr37537Tm7Lx51nbP5XlkI=";
+      hash = "sha256-lzKWBFLpOW8Wx0E4XyU+friPjAPS2CyHWghXhOORwlI=";
     };
 
     nativeBuildInputs = [ squashfsTools ];
