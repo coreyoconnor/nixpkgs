@@ -829,7 +829,7 @@ in
     ];
     extraBuildInputs = [
       dbus
-      ffmpeg
+      ffmpeg_6
       fmt
       gnutls
       gtest
