@@ -3,7 +3,6 @@
   buildGoModule,
   fetchFromGitHub,
   buildEnv,
-  linkFarm,
   overrideCC,
   makeWrapper,
   stdenv,
@@ -19,6 +18,7 @@
   cudaPackages,
   darwin,
   autoAddDriverRunpath,
+  autoPatchelfHook,
 
   nixosTests,
   testers,
@@ -41,13 +41,13 @@ assert builtins.elem acceleration [
 let
   pname = "ollama";
   # don't forget to invalidate all hashes each update
-  version = "0.5.1";
+  version = "0.5.4";
 
   src = fetchFromGitHub {
     owner = "ollama";
     repo = "ollama";
     rev = "v${version}";
-    hash = "sha256-llsK/rMK1jf2uneqgon9gqtZcbC9PuCDxoYfC7Ta6PY=";
+    hash = "sha256-JyP7A1+u9Vs6ynOKDwun1qLBsjN+CVHIv39Hh2TYa2U=";
     fetchSubmodules = true;
   };
 
@@ -68,6 +68,7 @@ let
 
   rocmLibs = [
     rocmPackages.clr
+    rocmPackages.hipblas-common
     rocmPackages.hipblas
     rocmPackages.rocblas
     rocmPackages.rocsolver
@@ -75,10 +76,9 @@ let
     rocmPackages.rocm-device-libs
     rocmPackages.rocm-smi
   ];
-  rocmClang = linkFarm "rocm-clang" { llvm = rocmPackages.llvm.clang; };
   rocmPath = buildEnv {
     name = "rocm-path";
-    paths = rocmLibs ++ [ rocmClang ];
+    paths = rocmLibs;
   };
 
   cudaLibs = [
@@ -143,6 +143,13 @@ goBuild {
       ROCM_PATH = rocmPath;
       CLBlast_DIR = "${clblast}/lib/cmake/CLBlast";
       HIP_PATH = rocmPath;
+      CFLAGS = "-Wno-c++17-extensions -I${rocmPath}/include";
+      CXXFLAGS = "-Wno-c++17-extensions -I${rocmPath}/include";
+    }
+    // lib.optionalAttrs (enableRocm && (rocmPackages.clr.localGpuTargets or false) != false) {
+      # If rocm CLR is set to build for an exact set of targets reuse that target list,
+      # otherwise let ollama use its builtin defaults
+      HIP_ARCHS = lib.concatStringsSep ";" rocmPackages.clr.localGpuTargets;
     }
     // lib.optionalAttrs enableCuda {
       CUDA_PATH = cudaPath;
@@ -152,6 +159,8 @@ goBuild {
     [
       cmake
       gitMinimal
+      # rpaths of runners end up wrong without this
+      autoPatchelfHook
     ]
     ++ lib.optionals enableRocm [
       rocmPackages.llvm.bintools
@@ -168,11 +177,6 @@ goBuild {
     lib.optionals enableRocm (rocmLibs ++ [ libdrm ])
     ++ lib.optionals enableCuda cudaLibs
     ++ lib.optionals stdenv.hostPlatform.isDarwin metalFrameworks;
-
-  patches = [
-    # ollama's build script is unable to find hipcc
-    ./rocm.patch
-  ];
 
   postPatch = ''
     # replace inaccurate version number with actual release version
@@ -192,10 +196,10 @@ goBuild {
   '';
 
   postInstall = lib.optionalString stdenv.hostPlatform.isLinux ''
-    # copy libggml_*.so and runners into lib
-    # https://github.com/ollama/ollama/blob/v0.4.4/llama/make/gpu.make#L90
-    mkdir -p $out/lib
-    cp -r dist/*/lib/* $out/lib/
+    # copy runner folders into $out/lib/ollama/runners/
+    # end result should be multiple folders inside runners/ each with their own ollama_llama_server binary
+    mkdir -p $out/lib/ollama/runners
+    cp -r llama/build/*/runners/* $out/lib/ollama/runners/
   '';
 
   postFixup =
