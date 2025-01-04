@@ -10,6 +10,7 @@
   nix-update-script,
 
   cmake,
+  gcc-unwrapped,
   gcc12,
   gitMinimal,
   clblast,
@@ -174,7 +175,8 @@ goBuild {
     ++ lib.optionals stdenv.hostPlatform.isDarwin metalFrameworks;
 
   buildInputs =
-    lib.optionals enableRocm (rocmLibs ++ [ libdrm ])
+    [ gcc-unwrapped.lib ]
+    ++ lib.optionals enableRocm (rocmLibs ++ [ libdrm ])
     ++ lib.optionals enableCuda cudaLibs
     ++ lib.optionals stdenv.hostPlatform.isDarwin metalFrameworks;
 
