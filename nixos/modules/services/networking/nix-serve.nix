@@ -9,6 +9,9 @@ with lib;
 
 let
   cfg = config.services.nix-serve;
+  listenOption = if cfg.listenSockets != []
+    then concatMapStringsSep " " (socket: "--listen ${socket}") cfg.listenSockets
+    else "--listen ${cfg.bindAddress}:${toString cfg.port}";
 in
 {
   options = {
@@ -28,6 +31,15 @@ in
         default = "0.0.0.0";
         description = ''
           IP address where nix-serve will bind its listening socket.
+        '';
+      };
+
+      listenSockets = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        description = ''
+          List of address:port, :port and unix domain sockets to listen on.
+          If non-empty the `bindAddress` and `port` options are ignored.
         '';
       };
 
@@ -84,7 +96,7 @@ in
         ${lib.optionalString (cfg.secretKeyFile != null) ''
           export NIX_SECRET_KEY_FILE="$CREDENTIALS_DIRECTORY/NIX_SECRET_KEY_FILE"
         ''}
-        exec ${cfg.package}/bin/nix-serve --listen ${cfg.bindAddress}:${toString cfg.port} ${cfg.extraParams}
+        exec ${cfg.package}/bin/nix-serve ${listenOption} ${cfg.extraParams}
       '';
 
       serviceConfig = {
