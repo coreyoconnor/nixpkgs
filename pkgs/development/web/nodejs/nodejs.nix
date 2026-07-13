@@ -476,6 +476,10 @@ let
               # fail on openssl 3.6.0
               "test-http2-server-unknown-protocol"
               "test-tls-ocsp-callback"
+
+              # fail on zfs
+              "test-fileurltopathbuffer"
+              "test-fs-readdir-ucs2"
             ]
             ++ lib.optionals (!lib.versionAtLeast version "22") [
               "test-tls-multi-key"
